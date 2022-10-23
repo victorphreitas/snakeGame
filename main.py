@@ -1,12 +1,16 @@
 from turtle import Turtle, Screen
 import random
 import time
+from scoreboard import Scoreboard
 
 screen = Screen()
 screen.setup(width=500, height=500)
 screen.bgcolor("black")
 screen.title("The Snake Game!")
 screen.tracer(0)
+
+# imported from scoreboard module
+score = Scoreboard()
 
 positions = [(0, 0), (-20, 0), (-40, 0)]
 segments = []
@@ -35,38 +39,30 @@ food.turtlesize(0.5)
 
 snake_speed = 15
 
-# putting text into the screen
+
+
+# showing the last record
 counter = 0
-last_record = 1
+last_record = 71
 
-text = Turtle("square")
-text.color("white")
-text.penup()
-text.hideturtle()
-text.goto(0, 225)
-
-
-def score():
-    global counter, text
-    text.clear()
-    text.write(f"Score = {counter}", font=("Arial", 14, "normal"), align="center")
-    counter += 1
+if score.score > last_record:
+    last_record = score.score
 
 
 def gameover():
     global last_record
     over = Turtle("square")
-    over.color("red")
+    over.color("light salmon")
     over.penup()
     over.hideturtle()
     over.goto(0, 0)
-    if counter > last_record:
-        over.color("white")
+    if score.score > last_record:
+        over.color("blue")
         last_record = counter - 1
-        over.write(f"Congratulations!\nYou beat the record!\nThe current record is {last_record}",
+        over.write(f"Congratulations!\nYou beat the record!\nThe current record is {score.score}",
                    font=("Arial", 14, "normal"), align="center")
     else:
-        over.write(f"Game Over! You're stupid as fuck!\nThe current record is: {last_record}",
+        over.write(f"Game Over! \nThe current record is: {last_record}",
                    font=("Arial", 14, "normal"), align="center")
 
 
@@ -139,7 +135,7 @@ def snake_movement(speed):
 
         if abs(int(segments[0].xcor()) - int(food.xcor())) <= 10 and abs(
                 int(segments[0].ycor()) - int(food.ycor())) <= 10:
-            score()
+            score.refresh()
             extend()
         # fix int function so it can detect touch on body
         touch_body()
